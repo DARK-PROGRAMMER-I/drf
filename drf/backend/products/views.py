@@ -65,13 +65,76 @@ class ProductMixinView(
     ):
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
+    
+    def get(self, request , *args, **kwargs):
+
+        return self.list(request, *args, **kwargs)
+product_mixin_list_view = ProductMixinView.as_view()
+
+# Get the specific produt by passing pk
+class ProductMixinView(
+    mixins.ListModelMixin,
+    mixins.RetrieveModelMixin,
+    generics.GenericAPIView
+    ):
+    queryset = Product.objects.all()
+    serializer_class = ProductSerializer
     lookup_field = 'pk'
     
     def get(self, request , *args, **kwargs):
         pk = kwargs.get('pk')
-        return self.list(request, *args, **kwargs)
+        return self.retrieve(request, *args, **kwargs)
 product_mixin_view = ProductMixinView.as_view()
 
+# Update Mixin View
+class ProductUpdateMixinView(
+    generics.GenericAPIView,
+    mixins.UpdateModelMixin
+    ):
+    
+    queryset = Product.objects.all()
+    serializer_class = ProductSerializer
+    lookup_field = 'pk'
+    def put(self, request, *args, **kwargs):
+        pk = kwargs.get('pk')
+        
+        return self.update(request)
+    
+product_update_mixin_view = ProductUpdateMixinView.as_view()
+    
+class ProductCreateMixinView(
+    mixins.ListModelMixin,
+    mixins.RetrieveModelMixin,
+    mixins.CreateModelMixin,
+    generics.GenericAPIView
+    ):
+    queryset = Product.objects.all()
+    serializer_class = ProductSerializer
+
+    
+    def post(self, request, *args, **kwargs):
+        return self.create(request, *args, **kwargs)
+product_create_mixin_view = ProductCreateMixinView.as_view()
+
+class ProduceDeleteMixinView(
+    generics.GenericAPIView,
+    mixins.DestroyModelMixin,
+):
+    queryset = Product.objects.all()
+    serializer_class = ProductSerializer
+    lookup_field = 'pk'
+    
+    def delete(self, request, *args, **kwargs):
+        pk = kwargs.get('pk')
+        
+        return self.destroy(request, *args, **kwargs)
+    
+product_delete_mixin_view = ProduceDeleteMixinView.as_view()
+
+
+    
+    
+    
 
 
 
